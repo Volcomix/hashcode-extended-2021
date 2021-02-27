@@ -1,0 +1,14 @@
+.App {
+  margin: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.App input {
+  margin-right: 8px;
+}
+
+.App button {
+  margin-top: 16px;
+}
