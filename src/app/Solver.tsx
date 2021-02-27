@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { getDatasetInfo } from '../dataset';
 import { Dataset } from '../model';
 import './Solver.css';
 
@@ -13,6 +14,8 @@ function Solver({ datasets }: SolverProps) {
 
   const isSomeSelected = selectedDatasets.includes(true);
   const areAllSelected = !selectedDatasets.includes(false);
+
+  const datasetsInfos = datasets.map(getDatasetInfo);
 
   function selectOrDeselectAll() {
     setSelectedDatasets(datasets.map(() => !areAllSelected));
@@ -46,6 +49,9 @@ function Solver({ datasets }: SolverProps) {
               />
             </th>
             <th>Dataset</th>
+            {Object.keys(datasetsInfos[0]).map((columnName) => (
+              <th key={columnName}>{columnName}</th>
+            ))}
           </tr>
         </thead>
         <tbody>
@@ -59,6 +65,9 @@ function Solver({ datasets }: SolverProps) {
                 />
               </td>
               <td>{dataset.name}</td>
+              {Object.values(datasetsInfos[i]).map((value, j) => (
+                <td key={`${dataset.name}-info-${j}`}>{value}</td>
+              ))}
             </tr>
           ))}
         </tbody>

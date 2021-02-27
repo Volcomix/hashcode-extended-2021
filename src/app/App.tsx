@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import * as datasetUrls from '../../dataset';
 import { parseDataset } from '../dataset';
 import { Dataset } from '../model';
-import './App.css';
 import Solver from './Solver';
 
 function App() {

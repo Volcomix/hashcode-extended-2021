@@ -2,6 +2,14 @@
   margin: 16px;
 }
 
+.Solver table {
+  width: 100%;
+}
+
+.Solver th {
+  text-align: start;
+}
+
 .Solver button {
   margin-top: 16px;
 }
