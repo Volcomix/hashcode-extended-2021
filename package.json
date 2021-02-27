@@ -1,0 +1,9 @@
+{
+  "name": "hashcode-extended-2021",
+  "scripts": {
+    "start": "snowpack dev"
+  },
+  "devDependencies": {
+    "snowpack": "^3.0.13"
+  }
+}
