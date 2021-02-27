@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import * as datasetUrls from '../dataset';
+import * as datasetUrls from '../../dataset';
+import { parseDataset } from '../dataset';
 import './App.css';
 
 type DatasetName = keyof typeof datasetUrls;
@@ -50,7 +51,8 @@ function App() {
       });
 
     for await (const { datasetName, textContent } of datasetPromises) {
-      console.log(datasetName, textContent.length);
+      const dataset = parseDataset(datasetName, textContent);
+      console.log(dataset);
     }
   }
 
