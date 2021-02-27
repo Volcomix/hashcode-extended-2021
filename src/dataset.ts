@@ -54,3 +54,13 @@ export function parseDataset(
     bonusPerCar,
   };
 }
+
+export function getDatasetInfo(dataset: Dataset) {
+  return {
+    Duration: dataset.duration,
+    Streets: dataset.streets.length,
+    Intersections: dataset.intersections.length,
+    Cars: dataset.cars.length,
+    'Bonus per car': dataset.bonusPerCar,
+  };
+}
