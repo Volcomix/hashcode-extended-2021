@@ -56,11 +56,60 @@ export function parseDataset(
 }
 
 export function getDatasetInfo(dataset: Dataset) {
+  const streetsDurations = dataset.streets.map((street) => street.duration);
+  const pathsLengths = dataset.cars.map((car) => car.path.length);
+  const carsCountByStreet = getCarsCountByStreet(dataset);
+  const carsCountByIntersection = getCarsCountByIntersection(dataset);
   return {
     Duration: dataset.duration,
     Streets: dataset.streets.length,
+    'Avg street duration': avg(streetsDurations),
+    'Min street duration': min(streetsDurations),
+    'Max street duration': max(streetsDurations),
+    'Avg cars per street': avg(carsCountByStreet),
+    'Min cars per street': min(carsCountByStreet),
+    'Max cars per street': max(carsCountByStreet),
     Intersections: dataset.intersections.length,
+    'Avg cars per intersection': avg(carsCountByIntersection),
+    'Min cars per intersection': min(carsCountByIntersection),
+    'Max cars per intersection': max(carsCountByIntersection),
     Cars: dataset.cars.length,
+    'Avg path length': avg(pathsLengths),
+    'Min path length': min(pathsLengths),
+    'Max path length': max(pathsLengths),
     'Bonus per car': dataset.bonusPerCar,
   };
+}
+
+function getCarsCountByStreet(dataset: Dataset): number[] {
+  const carsCounts = dataset.streets.map(() => 0);
+  for (const car of dataset.cars) {
+    for (const street of car.path) {
+      carsCounts[street.id]++;
+    }
+  }
+  return carsCounts;
+}
+
+function getCarsCountByIntersection(dataset: Dataset): number[] {
+  const carsCounts = dataset.intersections.map(() => 0);
+  for (const car of dataset.cars) {
+    for (const street of car.path.slice(0, -1)) {
+      carsCounts[street.to.id]++;
+    }
+  }
+  return carsCounts;
+}
+
+function avg(values: number[]): string {
+  const sum = values.reduce((acc, value) => acc + value, 0);
+  return (sum / values.length).toFixed(2);
+}
+
+function min(values: number[]): string {
+  return Math.min(...values).toFixed(2);
+}
+
+function max(values: number[]): string {
+  return Math.max(...values).toFixed(2);
 }
