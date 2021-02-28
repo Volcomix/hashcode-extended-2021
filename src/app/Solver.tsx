@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { getDatasetInfo } from '../dataset';
+import { WorkerMessageStartSolver } from '../helpers/worker';
 import { Dataset } from '../model';
 import './Solver.css';
 
@@ -29,8 +30,19 @@ function Solver({ datasets }: SolverProps) {
     );
   }
 
-  async function solve() {
-    console.log(datasets.filter((_dataset, i) => selectedDatasets[i]));
+  function solve() {
+    datasets
+      .filter((_dataset, i) => selectedDatasets[i])
+      .map((dataset) => {
+        const worker = new Worker(
+          new URL('/src/solvers/minimal.js', import.meta.url),
+          { type: 'module' }
+        );
+        worker.postMessage({
+          datasetName: dataset.name,
+          datasetUrl: dataset.url,
+        } as WorkerMessageStartSolver);
+      });
   }
 
   return (

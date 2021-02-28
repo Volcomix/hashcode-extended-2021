@@ -1,10 +1,13 @@
 import { trimLines } from './helpers/string';
 import { Car, Dataset, Intersection, Street } from './model';
 
-export function parseDataset(
+export async function fetchDataset(
   datasetName: string,
-  textContent: string
-): Dataset {
+  datasetUrl: string
+): Promise<Dataset> {
+  const response = await fetch(datasetUrl);
+  const textContent = await response.text();
+
   const [header, ...lines] = trimLines(textContent.split('\n'));
 
   const [
@@ -47,6 +50,7 @@ export function parseDataset(
 
   return {
     name: datasetName,
+    url: datasetUrl,
     duration,
     streets,
     intersections,

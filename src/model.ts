@@ -1,5 +1,6 @@
 export type Dataset = {
   name: string;
+  url: string;
   duration: number;
   streets: Street[];
   intersections: Intersection[];
