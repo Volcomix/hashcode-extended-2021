@@ -31,12 +31,12 @@ export type Submission = {
   score: number;
 };
 
-export type ScheduleItem = {
-  street: Street;
-  duration: number;
-};
-
 export type Schedule = {
   intersection: Intersection;
   items: ScheduleItem[];
+};
+
+export type ScheduleItem = {
+  street: Street;
+  duration: number;
 };
