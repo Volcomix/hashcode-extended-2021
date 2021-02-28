@@ -1,13 +1,55 @@
 .Solver {
-  margin: 16px;
+  --border: 1px solid rgba(0, 0, 0, 0.12);
 }
 
 .Solver table {
+  position: relative;
   width: 100%;
+  border-collapse: collapse;
+  overflow: hidden;
+  font-size: 14px;
 }
 
-.Solver th {
-  text-align: start;
+.Solver table::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  border: var(--border);
+  border-radius: 4px;
+  pointer-events: none;
+}
+
+.Solver th,
+.Solver td {
+  height: 32px;
+  padding-right: 8px;
+  text-align: right;
+}
+
+.Solver th:first-of-type,
+.Solver td:first-of-type {
+  padding-left: 8px;
+  text-align: left;
+}
+
+.Solver table label {
+  display: flex;
+  align-items: center;
+}
+
+.Solver table input {
+  margin-right: 8px;
+}
+
+.Solver tbody td {
+  border-top: var(--border);
+}
+
+.Solver tbody tr:hover {
+  background-color: red;
 }
 
 .Solver button {

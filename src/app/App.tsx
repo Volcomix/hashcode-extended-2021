@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react';
 import * as datasetUrls from '../../dataset';
 import { parseDataset } from '../dataset';
 import { Dataset } from '../model';
+import './App.css';
 import Solver from './Solver';
 
 function App() {
-  const [datasets, setDatasets] = useState<Dataset[] | null>(null);
+  const [datasets, setDatasets] = useState<Dataset[]>([]);
 
   useEffect(() => {
     async function fetchDatasets() {
@@ -22,7 +23,11 @@ function App() {
     fetchDatasets();
   }, []);
 
-  return datasets ? <Solver datasets={datasets} /> : <progress />;
+  return (
+    <div className="App">
+      {datasets.length ? <Solver datasets={datasets} /> : <progress />}
+    </div>
+  );
 }
 
 export default App;

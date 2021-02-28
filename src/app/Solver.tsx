@@ -39,16 +39,18 @@ function Solver({ datasets }: SolverProps) {
         <thead>
           <tr>
             <th>
-              <input
-                type="checkbox"
-                ref={(el) =>
-                  el && (el.indeterminate = isSomeSelected && !areAllSelected)
-                }
-                checked={areAllSelected}
-                onChange={selectOrDeselectAll}
-              />
+              <label>
+                <input
+                  type="checkbox"
+                  ref={(el) =>
+                    el && (el.indeterminate = isSomeSelected && !areAllSelected)
+                  }
+                  checked={areAllSelected}
+                  onChange={selectOrDeselectAll}
+                />
+                Dataset
+              </label>
             </th>
-            <th>Dataset</th>
             {Object.keys(datasetsInfos[0]).map((columnName) => (
               <th key={columnName}>{columnName}</th>
             ))}
@@ -58,13 +60,15 @@ function Solver({ datasets }: SolverProps) {
           {datasets.map((dataset, i) => (
             <tr key={dataset.name}>
               <td>
-                <input
-                  type="checkbox"
-                  checked={selectedDatasets[i]}
-                  onChange={() => switchDatasetSelection(i)}
-                />
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={selectedDatasets[i]}
+                    onChange={() => switchDatasetSelection(i)}
+                  />
+                  {dataset.name}
+                </label>
               </td>
-              <td>{dataset.name}</td>
               {Object.values(datasetsInfos[i]).map((value, j) => (
                 <td key={`${dataset.name}-info-${j}`}>{value}</td>
               ))}

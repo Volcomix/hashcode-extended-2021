@@ -1,0 +1,8 @@
+.App {
+  margin: 16px;
+}
+
+.App progress {
+  margin: auto;
+  display: block;
+}
