@@ -3,6 +3,10 @@
   "scripts": {
     "start": "snowpack dev"
   },
+  "engines": {
+    "node": ">=15",
+    "yarn": ">=2"
+  },
   "dependencies": {
     "react": "^17.0.1",
     "react-dom": "^17.0.1"
