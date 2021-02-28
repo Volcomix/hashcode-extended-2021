@@ -85,7 +85,7 @@ export function getDatasetInfo(dataset: Dataset) {
   };
 }
 
-function getCarsCountByStreet(dataset: Dataset): number[] {
+export function getCarsCountByStreet(dataset: Dataset): number[] {
   const carsCounts = dataset.streets.map(() => 0);
   for (const car of dataset.cars) {
     for (const street of car.path) {
@@ -95,7 +95,7 @@ function getCarsCountByStreet(dataset: Dataset): number[] {
   return carsCounts;
 }
 
-function getCarsCountByIntersection(dataset: Dataset): number[] {
+export function getCarsCountByIntersection(dataset: Dataset): number[] {
   const carsCounts = dataset.intersections.map(() => 0);
   for (const car of dataset.cars) {
     for (const street of car.path.slice(0, -1)) {

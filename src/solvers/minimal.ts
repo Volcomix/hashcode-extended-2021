@@ -1,4 +1,8 @@
-import { fetchDataset } from '../dataset';
+import {
+  fetchDataset,
+  getCarsCountByIntersection,
+  getCarsCountByStreet,
+} from '../dataset';
 import {
   WorkerMessageStartSolver,
   WorkerMessageSubmission,
@@ -8,14 +12,20 @@ import { formatSubmission } from '../submission';
 
 onmessage = async (ev: MessageEvent<WorkerMessageStartSolver>) => {
   const dataset = await fetchDataset(ev.data.datasetName, ev.data.datasetUrl);
+  const carsCountByStreet = getCarsCountByStreet(dataset);
+  const carsCountByIntersection = getCarsCountByIntersection(dataset);
   const submission: Submission = {
-    schedules: dataset.intersections.map((intersection) => ({
-      intersection,
-      items: intersection.arrivals.map((street) => ({
-        street,
-        duration: 1,
+    schedules: dataset.intersections
+      .filter((intersection) => carsCountByIntersection[intersection.id])
+      .map((intersection) => ({
+        intersection,
+        items: intersection.arrivals
+          .filter((street) => carsCountByStreet[street.id])
+          .map((street) => ({
+            street,
+            duration: 1,
+          })),
       })),
-    })),
     score: 0,
   };
   const submissionMessage: WorkerMessageSubmission = {
