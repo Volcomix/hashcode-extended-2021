@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { getDatasetInfo } from '../dataset';
-import { WorkerMessageStartSolver } from '../helpers/worker';
+import {
+  WorkerMessageStartSolver,
+  WorkerMessageSubmission,
+} from '../helpers/worker';
 import { Dataset } from '../model';
 import './Solver.css';
 
@@ -8,9 +11,18 @@ type SolverProps = {
   datasets: Dataset[];
 };
 
+type SubmissionBlob = {
+  datasetName: string;
+  score: number;
+  url: string;
+};
+
 function Solver({ datasets }: SolverProps) {
   const [selectedDatasets, setSelectedDatasets] = useState(
-    datasets.map(() => false)
+    datasets.map(() => true)
+  );
+  const [submissionsBlobs, setSubmissionsBlobs] = useState<SubmissionBlob[]>(
+    []
   );
 
   const isSomeSelected = selectedDatasets.includes(true);
@@ -42,6 +54,18 @@ function Solver({ datasets }: SolverProps) {
           datasetName: dataset.name,
           datasetUrl: dataset.url,
         } as WorkerMessageStartSolver);
+        worker.onmessage = (ev: MessageEvent<WorkerMessageSubmission>) => {
+          localStorage.setItem(dataset.name, JSON.stringify(ev.data));
+          const blob = new Blob([ev.data.textContent], {
+            type: 'text/plain',
+          });
+          const submissionBlob: SubmissionBlob = {
+            datasetName: dataset.name,
+            score: ev.data.score,
+            url: URL.createObjectURL(blob),
+          };
+          setSubmissionsBlobs((prev) => [...prev, submissionBlob]);
+        };
       });
   }
 
@@ -92,6 +116,15 @@ function Solver({ datasets }: SolverProps) {
         </table>
       </div>
       <button onClick={solve}>Solve</button>
+      {submissionsBlobs.map((submissionBlob) => (
+        <a
+          key={submissionBlob.url}
+          href={submissionBlob.url}
+          download={`${submissionBlob.datasetName}-${submissionBlob.score}`}
+        >
+          {submissionBlob.datasetName} ({submissionBlob.score})
+        </a>
+      ))}
     </div>
   );
 }

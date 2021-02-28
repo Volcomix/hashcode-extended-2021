@@ -1,3 +1,9 @@
+.Solver {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
 .Solver-table {
   --border: 1px solid rgba(0, 0, 0, 0.12);
   --padding: 8px;
@@ -45,4 +51,5 @@
 
 .Solver button {
   margin-top: 16px;
+  margin-bottom: 16px;
 }
