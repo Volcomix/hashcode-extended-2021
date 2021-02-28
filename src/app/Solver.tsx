@@ -35,47 +35,50 @@ function Solver({ datasets }: SolverProps) {
 
   return (
     <div className="Solver">
-      <table>
-        <thead>
-          <tr>
-            <th>
-              <label>
-                <input
-                  type="checkbox"
-                  ref={(el) =>
-                    el && (el.indeterminate = isSomeSelected && !areAllSelected)
-                  }
-                  checked={areAllSelected}
-                  onChange={selectOrDeselectAll}
-                />
-                Dataset
-              </label>
-            </th>
-            {Object.keys(datasetsInfos[0]).map((columnName) => (
-              <th key={columnName}>{columnName}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {datasets.map((dataset, i) => (
-            <tr key={dataset.name}>
-              <td>
+      <div className="Solver-table">
+        <table>
+          <thead>
+            <tr>
+              <th>
                 <label>
                   <input
                     type="checkbox"
-                    checked={selectedDatasets[i]}
-                    onChange={() => switchDatasetSelection(i)}
+                    ref={(el) =>
+                      el &&
+                      (el.indeterminate = isSomeSelected && !areAllSelected)
+                    }
+                    checked={areAllSelected}
+                    onChange={selectOrDeselectAll}
                   />
-                  {dataset.name}
+                  Dataset
                 </label>
-              </td>
-              {Object.values(datasetsInfos[i]).map((value, j) => (
-                <td key={`${dataset.name}-info-${j}`}>{value}</td>
+              </th>
+              {Object.keys(datasetsInfos[0]).map((columnName) => (
+                <th key={columnName}>{columnName}</th>
               ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {datasets.map((dataset, i) => (
+              <tr key={dataset.name}>
+                <td>
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={selectedDatasets[i]}
+                      onChange={() => switchDatasetSelection(i)}
+                    />
+                    {dataset.name}
+                  </label>
+                </td>
+                {Object.values(datasetsInfos[i]).map((value, j) => (
+                  <td key={`${dataset.name}-info-${j}`}>{value}</td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
       <button onClick={solve}>Solve</button>
     </div>
   );
