@@ -6,29 +6,23 @@ import {
 import { Dataset } from '../model';
 import DatasetTable from './DatasetTable';
 import './Solver.css';
+import SubmissionTable from './SubmissionTable';
 
 type SolverProps = {
   datasets: Dataset[];
-};
-
-type SubmissionBlob = {
-  datasetName: string;
-  score: number;
-  url: string;
 };
 
 function Solver({ datasets }: SolverProps) {
   const [selectedDatasets, setSelectedDatasets] = useState(
     datasets.map(() => true)
   );
-  const [submissionsBlobs, setSubmissionsBlobs] = useState<SubmissionBlob[]>(
-    []
-  );
+  const [submissionsUrls, setSubmissionsUrls] = useState<string[]>([]);
 
   function solve() {
+    setSubmissionsUrls(datasets.map(() => ''));
     datasets
       .filter((_dataset, i) => selectedDatasets[i])
-      .map((dataset) => {
+      .forEach((dataset, datasetIndex) => {
         const worker = new Worker(
           new URL('/src/solvers/minimal.js', import.meta.url),
           { type: 'module' }
@@ -42,14 +36,21 @@ function Solver({ datasets }: SolverProps) {
           const blob = new Blob([ev.data.textContent], {
             type: 'text/plain',
           });
-          const submissionBlob: SubmissionBlob = {
-            datasetName: dataset.name,
-            score: ev.data.score,
-            url: URL.createObjectURL(blob),
-          };
-          setSubmissionsBlobs((prev) => [...prev, submissionBlob]);
+          const submissionUrl = URL.createObjectURL(blob);
+          setSubmissionsUrls((prevSubmissionsUrls) =>
+            prevSubmissionsUrls.map(
+              (prevSubmissionUrl, prevSubmissionUrlIndex) =>
+                prevSubmissionUrlIndex === datasetIndex
+                  ? submissionUrl
+                  : prevSubmissionUrl
+            )
+          );
         };
       });
+  }
+
+  function cancelAll() {
+    // TODO Handle cancel all
   }
 
   return (
@@ -59,16 +60,18 @@ function Solver({ datasets }: SolverProps) {
         selectedDatasets={selectedDatasets}
         onSelectedDatasetsChange={setSelectedDatasets}
       />
-      <button onClick={solve}>Solve</button>
-      {submissionsBlobs.map((submissionBlob) => (
-        <a
-          key={submissionBlob.url}
-          href={submissionBlob.url}
-          download={`${submissionBlob.datasetName}-${submissionBlob.score}`}
-        >
-          {submissionBlob.datasetName} ({submissionBlob.score})
-        </a>
-      ))}
+      {submissionsUrls.every(Boolean) ? (
+        <button onClick={solve}>Solve</button>
+      ) : (
+        <button onClick={cancelAll}>Cancel</button>
+      )}
+      {submissionsUrls.length > 0 && (
+        // TODO Handle solving part of the datasets
+        <SubmissionTable
+          datasets={datasets}
+          submissionsUrls={submissionsUrls}
+        />
+      )}
     </div>
   );
 }

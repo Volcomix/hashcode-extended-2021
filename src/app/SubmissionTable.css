@@ -1,0 +1,7 @@
+.SubmissionTable-submission {
+  width: 320px;
+}
+
+.SubmissionTable-submission progress {
+  width: 100%;
+}

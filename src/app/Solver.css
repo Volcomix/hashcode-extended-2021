@@ -1,10 +1,9 @@
 .Solver {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
 }
 
 .Solver button {
-  align-self: flex-start;
-  margin-top: 16px;
-  margin-bottom: 16px;
+  margin: 16px 0 56px 0;
 }
