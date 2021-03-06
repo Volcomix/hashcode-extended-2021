@@ -1,0 +1,12 @@
+.DatasetTable-number {
+  text-align: right;
+}
+
+.DatasetTable-checkbox label {
+  display: flex;
+  align-items: center;
+}
+
+.DatasetTable-checkbox input {
+  margin-right: 8px;
+}
