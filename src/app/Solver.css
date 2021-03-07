@@ -4,6 +4,16 @@
   align-items: flex-start;
 }
 
-.Solver button {
-  margin: 16px 0 56px 0;
+.Solver-controls {
+  margin-top: 16px;
+  margin-bottom: 56px;
+}
+
+.Solver-controls > * {
+  margin-right: 8px;
+  font-size: 12px;
+}
+
+.Solver-controls button {
+  width: 64px;
 }

@@ -16,6 +16,7 @@ function Solver({ datasets }: SolverProps) {
   const [selectedDatasets, setSelectedDatasets] = useState(
     datasets.map(() => true)
   );
+  const [solverName, setSolverName] = useState<string>('minimal');
   const [workers, setWorkers] = useState<(Worker | null)[]>(
     datasets.map(() => null)
   );
@@ -33,7 +34,7 @@ function Solver({ datasets }: SolverProps) {
           return null;
         }
         const worker = new Worker(
-          new URL('/src/solvers/minimal.js', import.meta.url),
+          new URL(`/src/solvers/${solverName}.js`, import.meta.url),
           { type: 'module' }
         );
         worker.postMessage({
@@ -83,11 +84,20 @@ function Solver({ datasets }: SolverProps) {
         selectedDatasets={selectedDatasets}
         onSelectedDatasetsChange={setSelectedDatasets}
       />
-      {submissionsUrls.some((submissionUrl) => submissionUrl === '') ? (
-        <button onClick={cancelAll}>Cancel</button>
-      ) : (
-        <button onClick={solve}>Solve</button>
-      )}
+      <div className="Solver-controls">
+        <select
+          value={solverName}
+          onChange={(ev) => setSolverName(ev.target.value)}
+        >
+          <option value="minimal">Minimal</option>
+          <option value="weight">Weight</option>
+        </select>
+        {submissionsUrls.some((submissionUrl) => submissionUrl === '') ? (
+          <button onClick={cancelAll}>Cancel</button>
+        ) : (
+          <button onClick={solve}>Solve</button>
+        )}
+      </div>
       {submissionsUrls.some((submissionUrl) => submissionUrl !== null) && (
         <SubmissionTable
           datasets={datasets}
