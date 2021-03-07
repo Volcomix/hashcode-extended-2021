@@ -29,13 +29,14 @@ function SubmissionTable({ datasets, submissionsUrls }: SubmissionTableProps) {
             <tr key={dataset.name}>
               <td>{dataset.name}</td>
               <td className="SubmissionTable-submission">
-                {submissionUrl ? (
+                {submissionUrl === 'canceled' ? (
+                  'Canceled'
+                ) : submissionUrl ? (
                   <a href={submissionUrl} download={submissionFileName}>
                     {submissionFileName}
                   </a>
                 ) : (
                   // TODO Display actual progress if any
-                  // TODO Handle canceling single submission
                   <progress />
                 )}
               </td>
