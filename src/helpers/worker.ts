@@ -6,6 +6,7 @@ export type WorkerMessageStartSolver = {
 export type WorkerMessageProgress = {
   max: number;
   value: number;
+  info: { [columnName: string]: number };
 };
 
 export type WorkerMessageSubmission = {

@@ -5,3 +5,7 @@
 .SubmissionTable-submission progress {
   width: 100%;
 }
+
+.SubmissionTable-number {
+  text-align: right;
+}

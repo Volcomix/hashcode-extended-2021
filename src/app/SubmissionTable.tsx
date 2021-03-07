@@ -20,12 +20,19 @@ function SubmissionTable({
   submissionsMessages,
   submissionsUrls,
 }: SubmissionTableProps) {
+  const columnNames = progress[0].info ? Object.keys(progress[0].info) : [];
+
   return (
     <Table>
       <thead>
         <tr>
           <th>Dataset</th>
           <th>Submission</th>
+          {columnNames.map((columnName) => (
+            <th key={columnName} className="SubmissionTable-number">
+              {columnName}
+            </th>
+          ))}
         </tr>
       </thead>
       <tbody>
@@ -49,13 +56,20 @@ function SubmissionTable({
                     {submissionFileName}
                   </a>
                 ) : (
-                  // TODO Display actual progress if any
                   <progress
                     max={datasetProgress.max}
                     value={datasetProgress.value}
                   />
                 )}
               </td>
+              {columnNames.map((columnName) => (
+                <td
+                  key={`${dataset.name}-${columnName}`}
+                  className="SubmissionTable-number"
+                >
+                  {datasetProgress.info && datasetProgress.info[columnName]}
+                </td>
+              ))}
             </tr>
           );
         })}
