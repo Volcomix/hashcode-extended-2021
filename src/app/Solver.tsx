@@ -14,17 +14,19 @@ type SolverProps = {
 
 function Solver({ datasets }: SolverProps) {
   const [selectedDatasets, setSelectedDatasets] = useState(
-    datasets.map(() => true)
+    datasets.map((_, i) => i === 0)
   );
-  const [solverName, setSolverName] = useState<string>('minimal');
+  const [solverName, setSolverName] = useState<string>('example');
   const [workers, setWorkers] = useState<(Worker | null)[]>(
     datasets.map(() => null)
   );
+  const [scores, setScores] = useState<number[]>(datasets.map(() => 0));
   const [submissionsUrls, setSubmissionsUrls] = useState<(string | null)[]>(
     datasets.map(() => null)
   );
 
   function solve() {
+    setScores(datasets.map(() => 0));
     setSubmissionsUrls(
       datasets.map((_dataset, i) => (selectedDatasets[i] ? '' : null))
     );
@@ -48,6 +50,11 @@ function Solver({ datasets }: SolverProps) {
             type: 'text/plain',
           });
           const submissionUrl = URL.createObjectURL(blob);
+          setScores((prevScores) =>
+            prevScores.map((prevScore, prevScoreIndex) =>
+              prevScoreIndex === datasetIndex ? ev.data.score : prevScore
+            )
+          );
           setSubmissionsUrls((prevSubmissionsUrls) =>
             prevSubmissionsUrls.map(
               (prevSubmissionUrl, prevSubmissionUrlIndex) =>
@@ -89,6 +96,7 @@ function Solver({ datasets }: SolverProps) {
           value={solverName}
           onChange={(ev) => setSolverName(ev.target.value)}
         >
+          <option value="example">Example</option>
           <option value="minimal">Minimal</option>
           <option value="weight">Weight</option>
         </select>
@@ -101,6 +109,7 @@ function Solver({ datasets }: SolverProps) {
       {submissionsUrls.some((submissionUrl) => submissionUrl !== null) && (
         <SubmissionTable
           datasets={datasets}
+          scores={scores}
           submissionsUrls={submissionsUrls}
         />
       )}

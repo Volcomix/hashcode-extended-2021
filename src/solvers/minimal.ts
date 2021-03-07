@@ -8,6 +8,7 @@ import {
   WorkerMessageSubmission,
 } from '../helpers/worker';
 import { Submission } from '../model';
+import { simulate } from '../simulation';
 import { formatSubmission } from '../submission';
 
 onmessage = async (ev: MessageEvent<WorkerMessageStartSolver>) => {
@@ -28,6 +29,7 @@ onmessage = async (ev: MessageEvent<WorkerMessageStartSolver>) => {
       })),
     score: 0,
   };
+  simulate(dataset, submission);
   const submissionMessage: WorkerMessageSubmission = {
     score: submission.score,
     textContent: formatSubmission(submission),

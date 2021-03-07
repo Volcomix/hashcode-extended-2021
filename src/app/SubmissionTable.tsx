@@ -5,10 +5,15 @@ import './SubmissionTable.css';
 
 type SubmissionTableProps = {
   datasets: Dataset[];
+  scores: number[];
   submissionsUrls: (string | null)[];
 };
 
-function SubmissionTable({ datasets, submissionsUrls }: SubmissionTableProps) {
+function SubmissionTable({
+  datasets,
+  scores,
+  submissionsUrls,
+}: SubmissionTableProps) {
   return (
     <Table>
       <thead>
@@ -23,7 +28,7 @@ function SubmissionTable({ datasets, submissionsUrls }: SubmissionTableProps) {
           if (submissionUrl === null) {
             return null;
           }
-          const submissionFileName = `${dataset.name}-0.txt`;
+          const submissionFileName = `${dataset.name}-${scores[i]}.txt`;
 
           return (
             <tr key={dataset.name}>
