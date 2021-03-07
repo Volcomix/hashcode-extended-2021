@@ -20,7 +20,12 @@ function SubmissionTable({
   submissionsMessages,
   submissionsUrls,
 }: SubmissionTableProps) {
-  const columnNames = progress[0].info ? Object.keys(progress[0].info) : [];
+  const firstSelectedDatasetIndex = progress.findIndex(
+    (_, i) => submissionsUrls[i] !== null
+  );
+  const columnNames = progress[firstSelectedDatasetIndex].info
+    ? Object.keys(progress[firstSelectedDatasetIndex].info)
+    : [];
 
   return (
     <Table>

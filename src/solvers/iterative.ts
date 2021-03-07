@@ -8,7 +8,7 @@ import {
   WorkerMessageStartSolver,
   WorkerMessageSubmission,
 } from '../helpers/worker';
-import { Submission } from '../model';
+import { Street, Submission } from '../model';
 import { initSimulation, simulateStep } from '../simulation';
 import { formatSubmission } from '../submission';
 
@@ -42,22 +42,39 @@ onmessage = async (ev: MessageEvent<WorkerMessageStartSolver>) => {
     score: 0,
   };
 
-  for (let i = 0; i < 10; i++) {
+  postMessage({
+    max: dataset.duration,
+    value: 0,
+    info: {
+      Iteration: 0,
+      Score: highestScore,
+    },
+  } as WorkerMessageProgress);
+
+  for (let i = 0; i < 1000; i++) {
+    const queuedCarsCount = new Map(
+      submission.schedules.flatMap((schedule) =>
+        schedule.items.map((scheduleItem) => [scheduleItem.street, 0])
+      )
+    );
+
     submission.score = 0;
     const simulationState = initSimulation(dataset, submission);
-
-    postMessage({
-      max: dataset.duration,
-      value: simulationState.second,
-      info: {
-        Iteration: i,
-        Score: highestScore,
-      },
-    } as WorkerMessageProgress);
 
     let start = Date.now();
     while (simulationState.second <= dataset.duration) {
       simulateStep(dataset, submission, simulationState);
+
+      submission.schedules.forEach((schedule) =>
+        schedule.items.forEach((scheduleItem) =>
+          queuedCarsCount.set(
+            scheduleItem.street,
+            queuedCarsCount.get(scheduleItem.street)! +
+              simulationState.lightQueues.get(scheduleItem.street)!.length
+          )
+        )
+      );
+
       const end = Date.now();
       const elapsed = end - start;
       if (elapsed >= 1000) {
@@ -91,6 +108,23 @@ onmessage = async (ev: MessageEvent<WorkerMessageStartSolver>) => {
         Score: highestScore,
       },
     } as WorkerMessageProgress);
+
+    const [worstStreet] = [...queuedCarsCount.entries()].reduce(
+      ([worstStreet, highestCarsCount], [street, carsCount]) =>
+        carsCount > highestCarsCount
+          ? [street, carsCount]
+          : [worstStreet, highestCarsCount],
+      [null! as Street, -Infinity]
+    );
+
+    submission.schedules.find((schedule) =>
+      schedule.items.find((scheduleItem) => {
+        if (scheduleItem.street === worstStreet) {
+          scheduleItem.duration++;
+          return true;
+        }
+      })
+    );
   }
   postMessage('done');
 };
