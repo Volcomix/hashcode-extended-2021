@@ -5,7 +5,7 @@ import './SubmissionTable.css';
 
 type SubmissionTableProps = {
   datasets: Dataset[];
-  submissionsUrls: string[];
+  submissionsUrls: (string | null)[];
 };
 
 function SubmissionTable({ datasets, submissionsUrls }: SubmissionTableProps) {
@@ -20,6 +20,9 @@ function SubmissionTable({ datasets, submissionsUrls }: SubmissionTableProps) {
       <tbody>
         {datasets.map((dataset, i) => {
           const submissionUrl = submissionsUrls[i];
+          if (submissionUrl === null) {
+            return null;
+          }
           const submissionFileName = `${dataset.name}-0.txt`;
 
           return (
