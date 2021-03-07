@@ -14,6 +14,7 @@ export async function fetchDataset(
     duration,
     intersectionsCount,
     streetsCount,
+    _carsCount,
     bonusPerCar,
   ] = header.split(' ').map(Number);
 

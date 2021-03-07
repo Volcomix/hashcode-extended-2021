@@ -14,9 +14,9 @@ type SolverProps = {
 
 function Solver({ datasets }: SolverProps) {
   const [selectedDatasets, setSelectedDatasets] = useState(
-    datasets.map((_, i) => i === 0)
+    datasets.map(() => true)
   );
-  const [solverName, setSolverName] = useState<string>('example');
+  const [solverName, setSolverName] = useState<string>('minimal');
   const [workers, setWorkers] = useState<(Worker | null)[]>(
     datasets.map(() => null)
   );

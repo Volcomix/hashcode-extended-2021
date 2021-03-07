@@ -31,10 +31,9 @@ onmessage = async (ev: MessageEvent<WorkerMessageStartSolver>) => {
     score: 0,
   };
   const simulationState = initSimulation(dataset, submission);
-  simulateStep(dataset, submission, simulationState);
-  simulateStep(dataset, submission, simulationState);
-  simulateStep(dataset, submission, simulationState);
-  // simulate(dataset, submission);
+  while (simulationState.second < dataset.duration) {
+    simulateStep(dataset, submission, simulationState);
+  }
   const submissionMessage: WorkerMessageSubmission = {
     score: submission.score,
     textContent: formatSubmission(submission),
