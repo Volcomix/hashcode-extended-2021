@@ -1,16 +1,19 @@
 import React from 'react';
+import { WorkerMessageProgress } from '../helpers/worker';
 import { Dataset } from '../model';
 import Table from './shared/Table';
 import './SubmissionTable.css';
 
 type SubmissionTableProps = {
   datasets: Dataset[];
+  progress: WorkerMessageProgress[];
   scores: number[];
   submissionsUrls: (string | null)[];
 };
 
 function SubmissionTable({
   datasets,
+  progress,
   scores,
   submissionsUrls,
 }: SubmissionTableProps) {
@@ -28,6 +31,7 @@ function SubmissionTable({
           if (submissionUrl === null) {
             return null;
           }
+          const datasetProgress = progress[i];
           const submissionFileName = `${dataset.name}-${scores[i]}.txt`;
 
           return (
@@ -42,7 +46,10 @@ function SubmissionTable({
                   </a>
                 ) : (
                   // TODO Display actual progress if any
-                  <progress />
+                  <progress
+                    max={datasetProgress.max}
+                    value={datasetProgress.value}
+                  />
                 )}
               </td>
             </tr>

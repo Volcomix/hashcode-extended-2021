@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import {
+  WorkerMessageProgress,
   WorkerMessageStartSolver,
   WorkerMessageSubmission,
 } from '../helpers/worker';
@@ -20,12 +21,16 @@ function Solver({ datasets }: SolverProps) {
   const [workers, setWorkers] = useState<(Worker | null)[]>(
     datasets.map(() => null)
   );
+  const [progress, setProgress] = useState<WorkerMessageProgress[]>(
+    datasets.map(() => ({} as WorkerMessageProgress))
+  );
   const [scores, setScores] = useState<number[]>(datasets.map(() => 0));
   const [submissionsUrls, setSubmissionsUrls] = useState<(string | null)[]>(
     datasets.map(() => null)
   );
 
   function solve() {
+    setProgress(datasets.map(() => ({} as WorkerMessageProgress)));
     setScores(datasets.map(() => 0));
     setSubmissionsUrls(
       datasets.map((_dataset, i) => (selectedDatasets[i] ? '' : null))
@@ -43,26 +48,46 @@ function Solver({ datasets }: SolverProps) {
           datasetName: dataset.name,
           datasetUrl: dataset.url,
         } as WorkerMessageStartSolver);
-        worker.onmessage = (ev: MessageEvent<WorkerMessageSubmission>) => {
-          worker.terminate();
-          localStorage.setItem(dataset.name, JSON.stringify(ev.data));
-          const blob = new Blob([ev.data.textContent], {
-            type: 'text/plain',
-          });
-          const submissionUrl = URL.createObjectURL(blob);
-          setScores((prevScores) =>
-            prevScores.map((prevScore, prevScoreIndex) =>
-              prevScoreIndex === datasetIndex ? ev.data.score : prevScore
-            )
-          );
-          setSubmissionsUrls((prevSubmissionsUrls) =>
-            prevSubmissionsUrls.map(
-              (prevSubmissionUrl, prevSubmissionUrlIndex) =>
-                prevSubmissionUrlIndex === datasetIndex
-                  ? submissionUrl
-                  : prevSubmissionUrl
-            )
-          );
+        worker.onmessage = (
+          ev: MessageEvent<WorkerMessageProgress | WorkerMessageSubmission>
+        ) => {
+          if ('value' in ev.data) {
+            const progressMessage = ev.data;
+            setProgress((prevProgress) =>
+              prevProgress.map(
+                (prevDatasetProgress, prevDatasetProgressIndex) =>
+                  prevDatasetProgressIndex === datasetIndex
+                    ? progressMessage
+                    : prevDatasetProgress
+              )
+            );
+          } else {
+            const submissionMessage = ev.data;
+            worker.terminate();
+            localStorage.setItem(
+              dataset.name,
+              JSON.stringify(submissionMessage)
+            );
+            const blob = new Blob([submissionMessage.textContent], {
+              type: 'text/plain',
+            });
+            const submissionUrl = URL.createObjectURL(blob);
+            setScores((prevScores) =>
+              prevScores.map((prevScore, prevScoreIndex) =>
+                prevScoreIndex === datasetIndex
+                  ? submissionMessage.score
+                  : prevScore
+              )
+            );
+            setSubmissionsUrls((prevSubmissionsUrls) =>
+              prevSubmissionsUrls.map(
+                (prevSubmissionUrl, prevSubmissionUrlIndex) =>
+                  prevSubmissionUrlIndex === datasetIndex
+                    ? submissionUrl
+                    : prevSubmissionUrl
+              )
+            );
+          }
         };
         return worker;
       })
@@ -109,6 +134,7 @@ function Solver({ datasets }: SolverProps) {
       {submissionsUrls.some((submissionUrl) => submissionUrl !== null) && (
         <SubmissionTable
           datasets={datasets}
+          progress={progress}
           scores={scores}
           submissionsUrls={submissionsUrls}
         />

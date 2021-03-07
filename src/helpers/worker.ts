@@ -3,6 +3,11 @@ export type WorkerMessageStartSolver = {
   datasetUrl: string;
 };
 
+export type WorkerMessageProgress = {
+  max: number;
+  value: number;
+};
+
 export type WorkerMessageSubmission = {
   score: number;
   textContent: string;
