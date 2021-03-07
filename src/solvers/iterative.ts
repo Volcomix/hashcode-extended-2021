@@ -30,28 +30,31 @@ onmessage = async (ev: MessageEvent<WorkerMessageStartSolver>) => {
       })),
     score: 0,
   };
-  const simulationState = initSimulation(dataset, submission);
-  postMessage({
-    max: dataset.duration,
-    value: simulationState.second,
-  } as WorkerMessageProgress);
-  let start = Date.now();
-  while (simulationState.second <= dataset.duration) {
-    simulateStep(dataset, submission, simulationState);
-    const end = Date.now();
-    const elapsed = end - start;
-    if (elapsed >= 1000) {
-      start = end;
-      postMessage({
-        max: dataset.duration,
-        value: simulationState.second,
-      } as WorkerMessageProgress);
+  for (let i = 0; i < 10; i++) {
+    submission.score = 0;
+    const simulationState = initSimulation(dataset, submission);
+    postMessage({
+      max: dataset.duration,
+      value: simulationState.second,
+    } as WorkerMessageProgress);
+    let start = Date.now();
+    while (simulationState.second <= dataset.duration) {
+      simulateStep(dataset, submission, simulationState);
+      const end = Date.now();
+      const elapsed = end - start;
+      if (elapsed >= 1000) {
+        start = end;
+        postMessage({
+          max: dataset.duration,
+          value: simulationState.second,
+        } as WorkerMessageProgress);
+      }
     }
+    const submissionMessage: WorkerMessageSubmission = {
+      score: submission.score,
+      textContent: formatSubmission(submission),
+    };
+    postMessage(submissionMessage);
   }
-  const submissionMessage: WorkerMessageSubmission = {
-    score: submission.score,
-    textContent: formatSubmission(submission),
-  };
-  postMessage(submissionMessage);
   postMessage('done');
 };

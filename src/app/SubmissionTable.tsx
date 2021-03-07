@@ -1,5 +1,8 @@
 import React from 'react';
-import { WorkerMessageProgress } from '../helpers/worker';
+import {
+  WorkerMessageProgress,
+  WorkerMessageSubmission,
+} from '../helpers/worker';
 import { Dataset } from '../model';
 import Table from './shared/Table';
 import './SubmissionTable.css';
@@ -7,14 +10,14 @@ import './SubmissionTable.css';
 type SubmissionTableProps = {
   datasets: Dataset[];
   progress: WorkerMessageProgress[];
-  scores: number[];
+  submissionsMessages: WorkerMessageSubmission[];
   submissionsUrls: (string | null)[];
 };
 
 function SubmissionTable({
   datasets,
   progress,
-  scores,
+  submissionsMessages,
   submissionsUrls,
 }: SubmissionTableProps) {
   return (
@@ -32,7 +35,8 @@ function SubmissionTable({
             return null;
           }
           const datasetProgress = progress[i];
-          const submissionFileName = `${dataset.name}-${scores[i]}.txt`;
+          const submissionMessage = submissionsMessages[i];
+          const submissionFileName = `${dataset.name}-${submissionMessage.score}.txt`;
 
           return (
             <tr key={dataset.name}>

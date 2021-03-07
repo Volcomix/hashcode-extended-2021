@@ -12,3 +12,5 @@ export type WorkerMessageSubmission = {
   score: number;
   textContent: string;
 };
+
+export type WorkerMessageEndSolver = 'done';

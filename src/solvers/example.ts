@@ -39,4 +39,5 @@ onmessage = async (ev: MessageEvent<WorkerMessageStartSolver>) => {
     textContent: formatSubmission(submission),
   };
   postMessage(submissionMessage);
+  postMessage('done');
 };
